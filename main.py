@@ -150,27 +150,9 @@ def show_stats(message):
     markup = types.ReplyKeyboardMarkup(row_width=2)
     bot.send_message(message.chat.id, hint, reply_markup=markup)
 
-# @bot.message_handler(func=lambda message: message.text == Command.DELETE_WORD)
-# def delete_word(message):
-#     cid = message.chat.id
-#     userStep[cid] = 3
-#     markup = types.ReplyKeyboardMarkup(row_width=2)
-#     hint = "Напишите слово, которое надо удалить"
-#     bot.send_message(message.chat.id, hint, reply_markup=markup)
-#
-#
-# @bot.message_handler(func=lambda message: message.text == Command.ADD_WORD)
-# def add_word(message):
-#     cid = message.chat.id
-#     userStep[cid] = 1
-#     markup = types.ReplyKeyboardMarkup(row_width=2)
-#     hint = "Напишите новое английское слово"
-#     bot.send_message(message.chat.id, hint, reply_markup=markup)
-
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def message_reply(message):
-
     sucsess = False
     text = message.text
 
@@ -227,10 +209,6 @@ def message_reply(message):
     bot.send_message(message.chat.id, hint, reply_markup=markup)
     if sucsess:
         next_cards(message)
-
-
-
-
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 
