@@ -36,7 +36,7 @@ class PostgreSQL:
                             full outer join user_words uw on uw.custom_word_id = erw.id
                             join user_answers ua on erw.e_word_id = ua.id
                             where (uw.user_id = %s or uw.user_id is null)
-                            and erw.id not in (select word_id from user_answers where answer = true order by random() limit 200)
+                            and erw.id not in (select word_id from user_answers where answer = true order by random() limit 400)
                             ORDER BY random()/power(hw.id , 0.05) DESC
                             LIMIT 1;
                         """, (user_id,))
