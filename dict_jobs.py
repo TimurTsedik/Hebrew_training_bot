@@ -38,7 +38,7 @@ class PostgreSQL:
                             join user_answers ua on erw.e_word_id = ua.id
                             where (uw.user_id = %s or uw.user_id is null)
                             and erw.id not in (select word_id from user_answers where answer = true order by random() limit 200)
-                            ORDER BY random()/power(hw.id , 0.01) DESC
+                            ORDER BY random()/power(hw.id , 0.05) DESC
                             LIMIT 1;
                         """, (user_id,))
                     return cur.fetchone()
