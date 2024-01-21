@@ -8,7 +8,6 @@ class PostgreSQL:
         self.login = 'postgres'
         self.password = 'postgres'
 
-
     def random_word_from_base(self, user_id, mistakes: bool):
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
             with conn.cursor() as cur:
@@ -69,9 +68,7 @@ class PostgreSQL:
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
 
-
     def random_rus_words(self, word_to_avoid, user_id):
-
         output = []
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
             with conn.cursor() as cur:
@@ -92,7 +89,6 @@ class PostgreSQL:
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
 
-
     def if_user_not_exist(self, user_id: int) -> bool:
 
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
@@ -109,7 +105,6 @@ class PostgreSQL:
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
 
-
     def add_user(self, user_id, user_name):
 
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
@@ -124,7 +119,6 @@ class PostgreSQL:
                     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
-
 
     def add_word_to_dict(self, uid, word_e, word_r):
 
@@ -157,7 +151,6 @@ class PostgreSQL:
                     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
-
 
     def delete_word_from_dict(self, uid, word_e):
         try:
@@ -209,7 +202,6 @@ class PostgreSQL:
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
 
-
     def if_e_word_exists(self, uid, word):
 
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
@@ -228,7 +220,6 @@ class PostgreSQL:
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
 
-
     def if_r_word_exists(self, uid, word):
 
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
@@ -246,7 +237,6 @@ class PostgreSQL:
                     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
                     message = template.format(type(ex).__name__, ex.args)
                     print(message)
-
 
     def find_e_word_links(self, e_word_id):
 
