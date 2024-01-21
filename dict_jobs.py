@@ -314,7 +314,7 @@ class PostgreSQL:
                         """, (uid, uid))
                     for row in cur.fetchall():
                         output.append(str(row[0]))
-                    ret = f'Made {int(output[0]) + int(output[1])} tries, {output[0]} correct answers and {output[1]} wrong answers. 🔥 Keep going! 🚀'
+                    ret = f'Made {int(output[0]) + int(output[1])} tries, {output[0]} correct answers and {output[1]} wrong answers. {round(int(output[1])/(int(output[0]) + int(output[1])),2) * 100} correct answers!🔥 Keep going! 🚀'
                     return ret
                 except Exception as ex:
                     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
