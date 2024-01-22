@@ -1,6 +1,6 @@
 import psycopg2
 
-
+difficultyDict = {1: [0, 150], 2: [100, 250], 3: [200, 500], 4: [500, 1000], 5: [1000, 2500], 6: [2500, 4000], 7: [4000, 6000], 8: [6000, 8000], 9: [8000, 10000]}
 class PostgreSQL:
 
     def __init__(self):
@@ -8,7 +8,7 @@ class PostgreSQL:
         self.login = 'postgres'
         self.password = 'postgres'
 
-    def random_word_from_base(self, user_id, mistakes: bool):
+    def random_word_from_base(self, user_id, mistakes: bool, difficulty: int):
         with psycopg2.connect(database=self.database, user=self.login, password=self.password) as conn:
             with conn.cursor() as cur:
                 try:
@@ -27,6 +27,7 @@ class PostgreSQL:
                             LIMIT 1;
                         """, (user_id,))
                     else:
+                        currentDifficulty = difficultyDict[difficulty]
                         cur.execute("""
                         SELECT hw.word as h_w, rw.word as r_w, hw.transcription as h_t, ew.word as e_w, erw.id as erw_id
                             from he_words hw
@@ -34,12 +35,13 @@ class PostgreSQL:
                             join r_words rw on rw.id = erw.r_word_id
                             join e_words ew on ew.id = erw.e_word_id
                             full outer join user_words uw on uw.custom_word_id = erw.id
-                            join user_answers ua on erw.e_word_id = ua.id
+                            full join user_answers ua on erw.e_word_id = ua.id
                             where (uw.user_id = %s or uw.user_id is null)
-                            and erw.id not in (select word_id from user_answers where answer = true order by random() limit 400)
-                            ORDER BY random()/power(hw.id , 0.05) DESC
+                            and erw.id not in (select word_id from user_answers where answer = true order by id desc limit 100)
+                            and hw.id between %s and %s
+                            ORDER BY random() DESC
                             LIMIT 1;
-                        """, (user_id,))
+                        """, (user_id, currentDifficulty[0], currentDifficulty[1]))
                     return cur.fetchone()
                 except Exception as ex:
                     template = "An exception of type {0} occurred. Arguments:\n{1!r}"

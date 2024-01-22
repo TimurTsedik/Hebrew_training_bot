@@ -16,6 +16,7 @@ bot = TeleBot(token_bot, state_storage=state_storage)
 
 known_users = []
 userStep = {}
+userDifficulty = {}
 buttons = []
 e_word_to_add = {}
 r_word_to_add = {}
@@ -37,10 +38,12 @@ class Command:
         MISTAKES = 'My mistakes'
         STATS = 'Statistics'
         NEXT = 'Next ⏭'
+        DIFFICULTY = 'Difficulty UP'
     else:
         MISTAKES = 'Мои ошибки'
         NEW_WORDS = 'Статистика'
         STATS = 'Дальше ⏭'
+        DIFFICULTY = 'Сложность ⏭'
 
 
 class MyStates(StatesGroup):
@@ -69,14 +72,16 @@ def create_cards(message):
         PostgreSQL.add_user(postgresql, cid, message.from_user.first_name)
         bot.send_message(cid, f"Welcome, {user_name}, let's learn עבר׳ת?")
 
-    markup = types.ReplyKeyboardMarkup(row_width=2)
+    markup = types.ReplyKeyboardMarkup(row_width=3)
 
     global buttons
     buttons = []
     if cid not in userStep:
         userStep[cid] = 0
+    if cid not in userDifficulty:
+        userDifficulty[cid] = 1
     mistakes = userStep[cid] == 5
-    words = PostgreSQL.random_word_from_base(postgresql, cid, mistakes)
+    words = PostgreSQL.random_word_from_base(postgresql, cid, mistakes, userDifficulty[cid])
     transcription = words[2]
     current_word_id[cid] = words[4]
     if en_hebrew:
@@ -113,7 +118,8 @@ def create_cards(message):
     # delete_word_btn = types.KeyboardButton(Command.DELETE_WORD)
     mistakes_btn = types.KeyboardButton(Command.MISTAKES)
     statistics_btn = types.KeyboardButton(Command.STATS)
-    buttons.extend([next_btn, mistakes_btn, statistics_btn])
+    difficulty_btn = types.KeyboardButton(Command.DIFFICULTY)
+    buttons.extend([next_btn, mistakes_btn, difficulty_btn, statistics_btn])
 
     markup.add(*buttons)
     if en_hebrew:
@@ -151,6 +157,17 @@ def show_stats(message):
     hint = PostgreSQL.show_user_statistics(postgresql, uid)
     markup = types.ReplyKeyboardMarkup(row_width=2)
     bot.send_message(message.chat.id, hint, reply_markup=markup)
+
+@bot.message_handler(func=lambda message: message.text == Command.DIFFICULTY)
+def show_difficulty(message):
+    uid = message.from_user.id
+    if userDifficulty[uid] == 9:
+        userDifficulty[uid] = 1
+    else:
+        userDifficulty[uid] += 1
+    Command.DIFFICULTY = difficultyHint(userDifficulty[uid])
+    hint = difficultyHint(userDifficulty[uid])
+    create_cards(message)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -211,6 +228,28 @@ def message_reply(message):
     bot.send_message(message.chat.id, hint, reply_markup=markup)
     if sucsess:
         next_cards(message)
+
+def difficultyHint(difficulty) -> str:
+    if difficulty == 1:
+        return "Very easy"
+    elif difficulty == 2:
+        return "A bit more complicated"
+    elif difficulty == 3:
+        return "Medium low"
+    elif difficulty == 4:
+        return "Medium"
+    elif difficulty == 5:
+        return "Medium high"
+    elif difficulty == 6:
+        return "Above medium high"
+    elif difficulty == 7:
+        return "Hard enough"
+    elif difficulty == 8:
+        return "Hard"
+    elif difficulty == 9:
+        return "Very hard🔥"
+
+
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 
