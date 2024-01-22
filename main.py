@@ -157,7 +157,7 @@ def show_stats(message):
 def message_reply(message):
     sucsess = False
     text = message.text
-    print(datetime.now()+ 'request from user: ', message.from_user.first_name)
+    print(str(datetime.now()) + ' request from user: ', message.from_user.first_name)
     markup = types.ReplyKeyboardMarkup(row_width=2)
     if len(userStep) == 0 or userStep.get(message.from_user.id) == 0 or userStep.get(message.from_user.id) == 5:
         if len(userStep) == 0:
