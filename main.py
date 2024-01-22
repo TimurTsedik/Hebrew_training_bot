@@ -3,6 +3,8 @@ import random
 from telebot import types, TeleBot, custom_filters
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
+from datetime import datetime
+
 
 from dict_jobs import PostgreSQL
 from credentials import token_bot
@@ -155,7 +157,7 @@ def show_stats(message):
 def message_reply(message):
     sucsess = False
     text = message.text
-    print('request from user: ', message.from_user.first_name)
+    print(datetime.now()+ 'request from user: ', message.from_user.first_name)
     markup = types.ReplyKeyboardMarkup(row_width=2)
     if len(userStep) == 0 or userStep.get(message.from_user.id) == 0 or userStep.get(message.from_user.id) == 5:
         if len(userStep) == 0:
